@@ -68,10 +68,10 @@ export default function WelcomeDashboard() {
 
   return (
     <main 
-      className="min-h-screen bg-cover bg-center bg-fixed text-slate-100 p-4 md:p-8 font-['Comic_Sans_MS',_'Comic_Sans',_cursive]"
+      className="relative min-h-screen bg-cover bg-center bg-fixed text-slate-100 p-4 md:p-8 font-['Comic_Sans_MS',_'Comic_Sans',_cursive]"
       style={{ backgroundImage: `url('/bg-phoenix.jpg')` }}
     >
-      <div className="min-h-screen bg-slate-950/80 backdrop-blur-sm -m-4 md:-m-8 p-4 md:p-8">
+      <div className="min-h-screen bg-slate-950/80 backdrop-blur-sm -m-4 md:-m-8 p-4 md:p-8 pb-16">
         <div className="max-w-5xl mx-auto space-y-8">
           
           {/* Welcome & Profile Header */}
@@ -197,6 +197,13 @@ export default function WelcomeDashboard() {
           </section>
 
         </div>
+      </div>
+
+      {/* Bottom-Right Transparent Italic Credit Signature */}
+      <div className="fixed bottom-3 right-4 pointer-events-none z-50">
+        <span className="text-xs italic font-medium text-slate-400/50 hover:text-slate-300/80 transition-colors tracking-wide select-none">
+          by Rez...
+        </span>
       </div>
     </main>
   );
