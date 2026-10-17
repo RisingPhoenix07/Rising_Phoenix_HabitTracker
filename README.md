@@ -11,6 +11,9 @@
   <a href="https://github.com/RisingPhoenix07/Rising_Phoenix_HabitTracker" target="_blank">
     <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repo"/>
   </a>
+  <a href="./LICENSE">
+  <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="MIT License"/>
+</a>
 </p>
 
 ---
@@ -49,7 +52,21 @@
 - **Node.js** (v18+)
 - **npm**
 
-### 1. Clone the Repository
+### Quick Start
 ```bash
+# 1. Clone the repository
 git clone [https://github.com/RisingPhoenix07/Rising_Phoenix_HabitTracker.git](https://github.com/RisingPhoenix07/Rising_Phoenix_HabitTracker.git)
 cd Rising_Phoenix_HabitTracker/daily-checklist-webapp
+
+# 2. Install dependencies
+npm install
+
+# 3. Create a .env file with your PostgreSQL connection URL
+echo 'DATABASE_URL="your-postgresql-connection-string"' > .env
+
+# 4. Push database schema & seed initial data
+npx prisma db push
+npx prisma db seed
+
+# 5. Start the local server
+npm run dev
