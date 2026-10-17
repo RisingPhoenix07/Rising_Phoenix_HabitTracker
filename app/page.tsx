@@ -71,16 +71,15 @@ export default function WelcomeDashboard() {
       className="relative min-h-screen bg-cover bg-center bg-fixed text-slate-100 p-4 md:p-8 font-['Comic_Sans_MS',_'Comic_Sans',_cursive]"
       style={{ backgroundImage: `url('/bg-phoenix.jpg')` }}
     >
-      <div className="min-h-screen bg-slate-950/80 backdrop-blur-sm -m-4 md:-m-8 p-4 md:p-8 pb-16">
-        <div className="max-w-5xl mx-auto space-y-8">
+      <div className="min-h-screen bg-slate-950/25 -m-4 md:-m-8 p-4 md:p-8 pb-16">
+        {/* Full max-w-5xl width measurements, aligned to the left to preserve the Phoenix artwork on the right */}
+        <div className="max-w-5xl mr-auto lg:ml-8 space-y-8">
           
           {/* Welcome & Profile Header */}
-          <header className="relative overflow-hidden rounded-2xl bg-slate-900/50 border border-slate-800/80 p-6 md:p-8 shadow-2xl backdrop-blur-md">
+          <header className="relative overflow-hidden rounded-2xl bg-slate-900/25 border border-slate-700/50 p-6 md:p-8 shadow-2xl backdrop-blur-md">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                  
-                  {/* Floating Pulsing Phoenix Bird Icon */}
                   <div className="relative flex items-center justify-center p-1">
                     <Bird className="w-8 h-8 text-sky-400 stroke-[2] animate-pulse filter drop-shadow-[0_0_12px_rgba(56,189,248,0.8)]" />
                   </div>
@@ -113,7 +112,7 @@ export default function WelcomeDashboard() {
 
               <Link
                 href="/tracker"
-                className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-6 py-3 rounded-2xl shadow-lg shadow-sky-500/25 transition-all hover:scale-105"
+                className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-6 py-3 rounded-2xl shadow-lg shadow-sky-500/25 transition-all hover:scale-105 shrink-0"
               >
                 Enter Task Workspace <ArrowRight className="w-5 h-5" />
               </Link>
@@ -122,32 +121,32 @@ export default function WelcomeDashboard() {
 
           {/* High-Level Mastery Stats */}
           <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-slate-900/40 border border-slate-800/60 p-6 rounded-2xl shadow-xl backdrop-blur-md flex items-center gap-4">
-              <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-400">
+            <div className="bg-slate-900/25 border border-slate-700/50 p-6 rounded-2xl shadow-xl backdrop-blur-md flex items-center gap-4">
+              <div className="p-3 bg-amber-500/20 border border-amber-500/30 rounded-xl text-amber-400 shrink-0">
                 <Flame className="w-6 h-6" />
               </div>
-              <div>
-                <p className="text-xs font-semibold uppercase text-slate-400">Active Streak</p>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase text-slate-300 truncate">Active Streak</p>
                 <p className="text-2xl font-black text-amber-400">{analytics.currentStreak || 0} Days</p>
               </div>
             </div>
 
-            <div className="bg-slate-900/40 border border-slate-800/60 p-6 rounded-2xl shadow-xl backdrop-blur-md flex items-center gap-4">
-              <div className="p-3 bg-sky-500/10 border border-sky-500/20 rounded-xl text-sky-400">
+            <div className="bg-slate-900/25 border border-slate-700/50 p-6 rounded-2xl shadow-xl backdrop-blur-md flex items-center gap-4">
+              <div className="p-3 bg-sky-500/20 border border-sky-500/30 rounded-xl text-sky-400 shrink-0">
                 <Trophy className="w-6 h-6" />
               </div>
-              <div>
-                <p className="text-xs font-semibold uppercase text-slate-400">Today's Score</p>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase text-slate-300 truncate">Today's Score</p>
                 <p className="text-2xl font-black text-sky-400">{todayScore}%</p>
               </div>
             </div>
 
-            <div className="bg-slate-900/40 border border-slate-800/60 p-6 rounded-2xl shadow-xl backdrop-blur-md flex items-center gap-4">
-              <div className="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-indigo-400">
+            <div className="bg-slate-900/25 border border-slate-700/50 p-6 rounded-2xl shadow-xl backdrop-blur-md flex items-center gap-4">
+              <div className="p-3 bg-indigo-500/20 border border-indigo-500/30 rounded-xl text-indigo-400 shrink-0">
                 <TrendingUp className="w-6 h-6" />
               </div>
-              <div>
-                <p className="text-xs font-semibold uppercase text-slate-400">7-Day Velocity</p>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase text-slate-300 truncate">7-Day Velocity</p>
                 <p className="text-2xl font-black text-indigo-400">{analytics.weeklyAverage || 0}%</p>
               </div>
             </div>
@@ -155,19 +154,19 @@ export default function WelcomeDashboard() {
 
           {/* Recharts 7-Day Completion Trend */}
           {analytics.history && analytics.history.length > 0 && (
-            <section className="bg-slate-900/40 border border-slate-800/60 p-6 rounded-2xl shadow-xl backdrop-blur-md space-y-4">
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400">Weekly Performance Trend</h2>
+            <section className="bg-slate-900/25 border border-slate-700/50 p-6 rounded-2xl shadow-xl backdrop-blur-md space-y-4">
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-300">Weekly Performance Trend</h2>
               <div className="h-48 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={analytics.history}>
                     <defs>
                       <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#38BDF8" stopOpacity={0.5} />
+                        <stop offset="5%" stopColor="#38BDF8" stopOpacity={0.6} />
                         <stop offset="95%" stopColor="#38BDF8" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <XAxis dataKey="date" stroke="#94A3B8" fontSize={12} tickLine={false} />
-                    <YAxis stroke="#94A3B8" fontSize={12} tickLine={false} domain={[0, 100]} />
+                    <XAxis dataKey="date" stroke="#CBD5E1" fontSize={12} tickLine={false} />
+                    <YAxis stroke="#CBD5E1" fontSize={12} tickLine={false} domain={[0, 100]} />
                     <Tooltip contentStyle={{ backgroundColor: '#0F172A', borderColor: '#334155', borderRadius: '12px', color: '#F8FAFC' }} />
                     <Area type="monotone" dataKey="percentage" stroke="#38BDF8" strokeWidth={3} fillOpacity={1} fill="url(#colorScore)" />
                   </AreaChart>
@@ -176,9 +175,9 @@ export default function WelcomeDashboard() {
             </section>
           )}
 
-          {/* Scroll-Animated Circular Segment Breakdown */}
+          {/* Category Breakdown */}
           <section className="space-y-4">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400">Today's Category Breakdown</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-300">Today's Category Breakdown</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {segments.map((seg) => {
                 const segTotal = seg.tasks?.length || 0;
@@ -199,9 +198,9 @@ export default function WelcomeDashboard() {
         </div>
       </div>
 
-      {/* Bottom-Right Transparent Italic Credit Signature */}
+      {/* Bottom-Right Transparent Signature */}
       <div className="fixed bottom-3 right-4 pointer-events-none z-50">
-        <span className="text-xs italic font-medium text-slate-400/50 hover:text-slate-300/80 transition-colors tracking-wide select-none">
+        <span className="text-xs italic font-medium text-slate-200/60 hover:text-slate-100 transition-colors tracking-wide select-none">
           by Rez...
         </span>
       </div>

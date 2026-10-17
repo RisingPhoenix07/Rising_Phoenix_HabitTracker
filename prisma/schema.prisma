@@ -9,43 +9,41 @@ datasource db {
 
 model Segment {
   id        String   @id @default(uuid())
+  userId    String   @default("legacy_user") // <-- Assigns default value
   name      String
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  order     Int
   tasks     Task[]
+  createdAt DateTime @default(now())
 }
 
 model Task {
   id        String     @id @default(uuid())
+  userId    String     @default("legacy_user") // <-- Assigns default value
   segmentId String
-  title     String
-  order     Int        @default(0)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
   segment   Segment    @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+  title     String
+  order     Int
   logs      DailyLog[]
+  createdAt DateTime   @default(now())
 }
 
 model DailyLog {
   id        String   @id @default(uuid())
   taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
   date      DateTime
   completed Boolean  @default(false)
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
-
-  @@unique([taskId, date])
 }
 
 model Comment {
   id        String   @id @default(uuid())
-  date      DateTime @unique
-  text      String
+  userId    String   @default("legacy_user") // <-- Assigns default value
+  date      DateTime
+  content   String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
+
 
 model Setting {
   id        String   @id @default(uuid())

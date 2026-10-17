@@ -1,80 +1,82 @@
-import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { auth } from '@clerk/nextjs/server';
+import { prisma } from '@/lib/prisma';
+import { NextResponse } from 'next/server';
 
-export async function GET(request: Request) {
+export async function GET() {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
-    const { searchParams } = new URL(request.url)
-    const daysParam = parseInt(searchParams.get('days') || '7', 10)
+    const userTasks = await prisma.task.findMany({
+      where: { userId },
+      include: {
+        logs: true,
+      },
+    });
 
-    const totalTasksCount = await prisma.task.count()
+    const totalTasksCount = userTasks.length;
     if (totalTasksCount === 0) {
-      return NextResponse.json({ history: [], weeklyAverage: 0, currentStreak: 0 })
+      return NextResponse.json({
+        history: [],
+        weeklyAverage: 0,
+        currentStreak: 0,
+      });
     }
 
-    const history = []
-    const today = new Date()
-    let totalScoreSum = 0
+    const history = [];
+    const today = new Date();
 
-    // Fetch historical 7-day completion data
-    for (let i = daysParam - 1; i >= 0; i--) {
-      const d = new Date(today)
-      d.setDate(d.getDate() - i)
-      const dateStr = d.toISOString().split('T')[0]
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const dayStart = new Date(d.setHours(0, 0, 0, 0));
+      const dayEnd = new Date(d.setHours(23, 59, 59, 999));
 
-      const startOfDay = new Date(`${dateStr}T00:00:00.000Z`)
-      const endOfDay = new Date(`${dateStr}T23:59:59.999Z`)
+      let completedCount = 0;
+      userTasks.forEach((task) => {
+        const hasCompletedLog = task.logs.some(
+          (log) => log.completed && log.date >= dayStart && log.date <= dayEnd
+        );
+        if (hasCompletedLog) completedCount++;
+      });
 
-      const completedCount = await prisma.dailyLog.count({
-        where: {
-          date: { gte: startOfDay, lte: endOfDay },
-          completed: true,
-        },
-      })
+      const percentage = Math.round((completedCount / totalTasksCount) * 100);
+      const dateLabel = d.toLocaleDateString('en-US', { weekday: 'short' });
 
-      const percentage = Math.round((completedCount / totalTasksCount) * 100)
-      totalScoreSum += percentage
-
-      history.push({
-        date: dateStr.slice(5), // "MM-DD"
-        completed: completedCount,
-        percentage,
-      })
+      history.push({ date: dateLabel, percentage });
     }
 
-    const weeklyAverage = Math.round(totalScoreSum / daysParam)
+    const weeklySum = history.reduce((acc, curr) => acc + curr.percentage, 0);
+    const weeklyAverage = Math.round(weeklySum / history.length);
 
-    // Calculate current streak (days with >= 70% completion)
-    let currentStreak = 0
-    let checkDate = new Date(today)
+    let streak = 0;
+    for (let i = 0; i < 30; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dayStart = new Date(d.setHours(0, 0, 0, 0));
+      const dayEnd = new Date(d.setHours(23, 59, 59, 999));
 
-    while (true) {
-      const dateStr = checkDate.toISOString().split('T')[0]
-      const startOfDay = new Date(`${dateStr}T00:00:00.000Z`)
-      const endOfDay = new Date(`${dateStr}T23:59:59.999Z`)
+      const hasActivity = userTasks.some((task) =>
+        task.logs.some((log) => log.completed && log.date >= dayStart && log.date <= dayEnd)
+      );
 
-      const completedCount = await prisma.dailyLog.count({
-        where: {
-          date: { gte: startOfDay, lte: endOfDay },
-          completed: true,
-        },
-      })
-
-      const pct = Math.round((completedCount / totalTasksCount) * 100)
-      if (pct >= 70) {
-        currentStreak++
-        checkDate.setDate(checkDate.getDate() - 1)
-      } else {
-        break
+      if (hasActivity) {
+        streak++;
+      } else if (i > 0) {
+        break;
       }
     }
 
     return NextResponse.json({
       history,
       weeklyAverage,
-      currentStreak,
-    })
+      currentStreak: streak,
+    });
   } catch (error) {
-    console.error('Error fetching analytics:', error)
-    return NextResponse.json({ error: 'Failed to fetch analytics' }, { status: 500 })
+    console.error('Analytics Error:', error);
+    return NextResponse.json({ error: 'Failed to calculate analytics' }, { status: 500 });
   }
 }
