@@ -15,7 +15,7 @@ export async function GET(request: Request) {
       },
     })
 
-    return NextResponse.json(comment || { text: '' })
+    return NextResponse.json(comment || { content: '' })
   } catch (error) {
     console.error('Error fetching comment:', error)
     return NextResponse.json({ error: 'Failed to fetch comment' }, { status: 500 })
@@ -24,7 +24,8 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const { date, text } = await request.json()
+    const { date, content, text } = await request.json()
+    const commentContent = content ?? text ?? ''
     if (!date) return NextResponse.json({ error: 'Date is required' }, { status: 400 })
 
     const startOfDay = new Date(`${date}T00:00:00.000Z`)
@@ -37,12 +38,12 @@ export async function POST(request: Request) {
     if (existing) {
       const updated = await prisma.comment.update({
         where: { id: existing.id },
-        data: { text },
+        data: { content: commentContent },
       })
       return NextResponse.json(updated)
     } else {
       const created = await prisma.comment.create({
-        data: { date: startOfDay, text },
+        data: { date: startOfDay, content: commentContent },
       })
       return NextResponse.json(created)
     }
