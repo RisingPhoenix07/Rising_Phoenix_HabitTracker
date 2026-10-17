@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://git.io/typing-svg">
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&pause=1000&color=38BDF8&center=true&vCenter=true&width=650&lines=%F0%9F%94%A5+Rising+Phoenix+Habit+Tracker;A+Full-Stack+Personal+Mastery+Dashboard;Built+with+Next.js+16+%2B+Prisma+%2B+Neon+PostgreSQL" alt="Typing Header" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&pause=1000&color=38BDF8&center=true&vCenter=true&width=650&lines=%F0%9F%94%A5+Rising+Phoenix+Habit+Tracker;A+Full-Stack+Personal+Mastery+Dashboard;Built+with;Next.js+16+%2B+Prisma+%2B+Neon+PostgreSQL" alt="Typing Header" />
   </a>
 </p>
 
@@ -12,8 +12,8 @@
     <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repo"/>
   </a>
   <a href="./LICENSE">
-  <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="MIT License"/>
-</a>
+    <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="MIT License"/>
+  </a>
 </p>
 
 ---
@@ -70,3 +70,7 @@ npx prisma db seed
 
 # 5. Start the local server
 npm run dev
+
+## 📄 License
+
+This project is licensed under the [MIT License](./LICENSE) - see the `LICENSE` file for details.
