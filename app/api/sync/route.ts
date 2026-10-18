@@ -14,27 +14,31 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, count: 0 })
     }
 
-    // Process all queued offline updates using the exact Prisma "log" model
-    await prisma.$transaction(
-      logs.map((log: { taskId: string; date: string; completed: boolean }) =>
-        prisma.log.upsert({
-          where: {
-            taskId_date: {
-              taskId: log.taskId,
-              date: log.date
-            }
-          },
-          update: {
-            completed: log.completed
-          },
-          create: {
-            taskId: log.taskId,
-            date: log.date,
-            completed: log.completed
-          }
+    for (const log of logs) {
+      const logDate = new Date(log.date)
+
+      const existingLog = await prisma.dailyLog.findFirst({
+        where: {
+          taskId: log.taskId,
+          date: logDate,
+        },
+      })
+
+      if (existingLog) {
+        await prisma.dailyLog.update({
+          where: { id: existingLog.id },
+          data: { completed: log.completed },
         })
-      )
-    )
+      } else {
+        await prisma.dailyLog.create({
+          data: {
+            taskId: log.taskId,
+            date: logDate,
+            completed: log.completed,
+          },
+        })
+      }
+    }
 
     return NextResponse.json({ success: true, count: logs.length })
   } catch (error) {
