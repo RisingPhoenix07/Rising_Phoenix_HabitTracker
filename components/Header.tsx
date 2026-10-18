@@ -6,7 +6,7 @@ export default function Header() {
       <h1 className="text-xl font-bold tracking-wider text-amber-500">Rising Phoenix</h1>
       <div>
         <SignedIn>
-          <UserButton afterSignOutUrl="/sign-in" />
+          <UserButton />
         </SignedIn>
         <SignedOut>
           <SignInButton />
