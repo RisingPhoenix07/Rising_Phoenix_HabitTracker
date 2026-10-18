@@ -53,6 +53,12 @@
 - **npm**
 
 ### Quick Start
+The app is live at 
+ <a href="https://rising-phoenix-habit-tracker.vercel.app" target="_blank">
+rising-phoenix-habit-tracker.vercel.app
+
+### Development
+
 ```bash
 # 1. Clone the repository
 git clone [https://github.com/RisingPhoenix07/Rising_Phoenix_HabitTracker.git](https://github.com/RisingPhoenix07/Rising_Phoenix_HabitTracker.git)
