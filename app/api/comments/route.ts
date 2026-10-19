@@ -1,54 +1,57 @@
-import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { NextResponse } from "next/server";
+import { connection } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 
 export async function GET(request: Request) {
+  await connection();
   try {
-    const { searchParams } = new URL(request.url)
-    const dateParam = searchParams.get('date') || new Date().toISOString().split('T')[0]
+    const { userId } = await auth();
+    const { searchParams } = new URL(request.url);
+    const dateParam = searchParams.get("date") || new Date().toISOString().split("T")[0];
 
-    const startOfDay = new Date(`${dateParam}T00:00:00.000Z`)
-    const endOfDay = new Date(`${dateParam}T23:59:59.999Z`)
+    const startOfDay = new Date(`${dateParam}T00:00:00.000Z`);
+    const endOfDay = new Date(`${dateParam}T23:59:59.999Z`);
 
     const comment = await prisma.comment.findFirst({
       where: {
-        date: { gte: startOfDay, lte: endOfDay },
+        createdAt: { gte: startOfDay, lte: endOfDay },
+        ...(userId ? { userId } : {}),
       },
-    })
+      orderBy: { createdAt: "desc" },
+    });
 
-    return NextResponse.json(comment || { content: '' })
+    return NextResponse.json(comment || { content: "", text: "" });
   } catch (error) {
-    console.error('Error fetching comment:', error)
-    return NextResponse.json({ error: 'Failed to fetch comment' }, { status: 500 })
+    console.error("Failed to fetch comment:", error);
+    return NextResponse.json({ error: "Failed to fetch comment" }, { status: 500 });
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
+  await connection();
   try {
-    const { date, content, text } = await request.json()
-    const commentContent = content ?? text ?? ''
-    if (!date) return NextResponse.json({ error: 'Date is required' }, { status: 400 })
+    const { userId } = await auth();
+    const body = await req.json();
+    const { content, text, taskId } = body;
 
-    const startOfDay = new Date(`${date}T00:00:00.000Z`)
-    const endOfDay = new Date(`${date}T23:59:59.999Z`)
-
-    const existing = await prisma.comment.findFirst({
-      where: { date: { gte: startOfDay, lte: endOfDay } },
-    })
-
-    if (existing) {
-      const updated = await prisma.comment.update({
-        where: { id: existing.id },
-        data: { content: commentContent },
-      })
-      return NextResponse.json(updated)
-    } else {
-      const created = await prisma.comment.create({
-        data: { date: startOfDay, content: commentContent },
-      })
-      return NextResponse.json(created)
+    const noteText = content || text;
+    if (!noteText || !noteText.trim()) {
+      return NextResponse.json({ error: "Content is required" }, { status: 400 });
     }
+
+    const comment = await prisma.comment.create({
+      data: {
+        userId: userId || "legacy_user",
+        content: noteText,
+        text: noteText,
+        taskId: taskId || null,
+      },
+    });
+
+    return NextResponse.json(comment);
   } catch (error) {
-    console.error('Error saving comment:', error)
-    return NextResponse.json({ error: 'Failed to save comment' }, { status: 500 })
+    console.error("Failed to save comment:", error);
+    return NextResponse.json({ error: "Failed to save note" }, { status: 500 });
   }
 }

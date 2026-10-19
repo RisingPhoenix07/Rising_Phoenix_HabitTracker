@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Trophy, TrendingUp, Edit2, Check, Quote, ArrowRight, Bird, Flame } from 'lucide-react';
+import { Flame, Trophy, TrendingUp, Edit2, Check, Quote, ArrowRight, Bird, BookOpen } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
 import SegmentProgressRing from '@/components/SegmentProgressRing';
 
@@ -31,19 +31,35 @@ export default function WelcomeDashboard() {
     setQuote(MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)]);
     const today = new Date().toISOString().split('T')[0];
     
+    // Safely fetch tasks with response content-type validation
     fetch(`/api/tasks?date=${today}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          return res.json();
+        }
+        return [];
+      })
       .then((data) => {
         if (Array.isArray(data)) setSegments(data);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error("Failed to load tasks:", err));
 
+    // Safely fetch analytics with response content-type validation
     fetch('/api/analytics?days=7')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          return res.json();
+        }
+        return null;
+      })
       .then((data) => {
         if (data && !data.error) setAnalytics(data);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error("Failed to load analytics:", err));
   }, []);
 
   const handleSaveName = () => {
@@ -69,13 +85,12 @@ export default function WelcomeDashboard() {
   return (
     <main 
       className="relative min-h-screen bg-cover bg-center bg-fixed text-slate-100 p-4 md:p-8 font-['Comic_Sans_MS',_'Comic_Sans',_cursive]"
-      style={{ backgroundImage: `url('/bg-phoenix.jpg')` }}
+      style={{ backgroundImage: "url('/bg-phoenix.jpg')" }}
     >
-      <div className="min-h-screen bg-slate-950/25 -m-4 md:-m-8 p-4 md:p-8 pb-16">
-        {/* Full max-w-5xl width measurements, aligned to the left to preserve the Phoenix artwork on the right */}
+      <div className="min-h-screen bg-slate-950/30 -m-4 md:-m-8 p-4 md:p-8 pb-16">
         <div className="max-w-5xl mr-auto lg:ml-8 space-y-8">
           
-          {/* Welcome & Profile Header */}
+          {/* Header */}
           <header className="relative overflow-hidden rounded-2xl bg-slate-900/25 border border-slate-700/50 p-6 md:p-8 shadow-2xl backdrop-blur-md">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               <div className="space-y-2">
@@ -110,43 +125,53 @@ export default function WelcomeDashboard() {
                 </p>
               </div>
 
-              <Link
-                href="/tracker"
-                className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-6 py-3 rounded-2xl shadow-lg shadow-sky-500/25 transition-all hover:scale-105 shrink-0"
-              >
-                Enter Task Workspace <ArrowRight className="w-5 h-5" />
-              </Link>
+              {/* Action Buttons */}
+              <div className="flex flex-wrap items-center gap-3">
+                <Link
+                  href="/tracker"
+                  className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-6 py-3 rounded-2xl shadow-lg shadow-sky-500/25 transition-all hover:scale-105"
+                >
+                  Enter Task Workspace <ArrowRight className="w-5 h-5" />
+                </Link>
+
+                <Link
+                  href="/notes"
+                  className="inline-flex items-center gap-2 bg-slate-900/60 hover:bg-slate-800/80 text-sky-400 hover:text-sky-300 font-semibold px-5 py-3 rounded-2xl border border-slate-700/60 transition-all backdrop-blur-md"
+                >
+                  <BookOpen className="w-4 h-4 text-sky-400" /> Notes
+                </Link>
+              </div>
             </div>
           </header>
 
           {/* High-Level Mastery Stats */}
           <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-slate-900/25 border border-slate-700/50 p-6 rounded-2xl shadow-xl backdrop-blur-md flex items-center gap-4">
-              <div className="p-3 bg-amber-500/20 border border-amber-500/30 rounded-xl text-amber-400 shrink-0">
+              <div className="p-3 bg-amber-500/20 border border-amber-500/30 rounded-xl text-amber-400">
                 <Flame className="w-6 h-6" />
               </div>
-              <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase text-slate-300 truncate">Active Streak</p>
+              <div>
+                <p className="text-xs font-semibold uppercase text-slate-300">Active Streak</p>
                 <p className="text-2xl font-black text-amber-400">{analytics.currentStreak || 0} Days</p>
               </div>
             </div>
 
             <div className="bg-slate-900/25 border border-slate-700/50 p-6 rounded-2xl shadow-xl backdrop-blur-md flex items-center gap-4">
-              <div className="p-3 bg-sky-500/20 border border-sky-500/30 rounded-xl text-sky-400 shrink-0">
+              <div className="p-3 bg-sky-500/20 border border-sky-500/30 rounded-xl text-sky-400">
                 <Trophy className="w-6 h-6" />
               </div>
-              <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase text-slate-300 truncate">Today's Score</p>
+              <div>
+                <p className="text-xs font-semibold uppercase text-slate-300">Today's Score</p>
                 <p className="text-2xl font-black text-sky-400">{todayScore}%</p>
               </div>
             </div>
 
             <div className="bg-slate-900/25 border border-slate-700/50 p-6 rounded-2xl shadow-xl backdrop-blur-md flex items-center gap-4">
-              <div className="p-3 bg-indigo-500/20 border border-indigo-500/30 rounded-xl text-indigo-400 shrink-0">
+              <div className="p-3 bg-indigo-500/20 border border-indigo-500/30 rounded-xl text-indigo-400">
                 <TrendingUp className="w-6 h-6" />
               </div>
-              <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase text-slate-300 truncate">7-Day Velocity</p>
+              <div>
+                <p className="text-xs font-semibold uppercase text-slate-300">7-Day Velocity</p>
                 <p className="text-2xl font-black text-indigo-400">{analytics.weeklyAverage || 0}%</p>
               </div>
             </div>
@@ -198,9 +223,8 @@ export default function WelcomeDashboard() {
         </div>
       </div>
 
-      {/* Bottom-Right Transparent Signature */}
       <div className="fixed bottom-3 right-4 pointer-events-none z-50">
-        <span className="text-xs italic font-medium text-slate-200/60 hover:text-slate-100 transition-colors tracking-wide select-none">
+        <span className="text-xs italic font-medium text-slate-200/60 tracking-wide select-none">
           by Rez...
         </span>
       </div>
