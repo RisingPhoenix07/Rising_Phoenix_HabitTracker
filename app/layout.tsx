@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" className={`${spaceGrotesk.variable} ${spaceGrotesk.className}`}>
+      <html lang="en" className={`${spaceGrotesk.variable} font-sans`}>
         <body className="bg-slate-950 text-slate-100 antialiased min-h-screen">
           <SyncManager />
           <Header />
