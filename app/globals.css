@@ -1,15 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,400;0,700;1,400;1,700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @layer base {
-  /* Mobile Default: Legible Comic Neue */
+  /* ==========================================
+     MOBILE DEFAULT (< 768px)
+     - Titles/Headings: Comic Neue
+     - Body text: Space Grotesk
+     ========================================== */
   * {
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif !important;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-title {
     font-family: 'Comic Neue', cursive, sans-serif !important;
   }
 
-  /* Desktop Default: Native Comic Sans MS */
+  /* ==========================================
+     DESKTOP DEFAULT (>= 768px)
+     - Preserves native Comic Sans MS
+     ========================================== */
   @media (min-width: 768px) {
-    * {
+    *, h1, h2, h3, h4, h5, h6, .font-title {
       font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif !important;
     }
   }
