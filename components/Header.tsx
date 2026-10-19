@@ -1,18 +1,24 @@
 "use client"
 
 import { UserButton, SignInButton, useUser } from "@clerk/nextjs"
+import { Cinzel } from "next/font/google"
+
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  weight: ["600", "800"],
+})
 
 export default function Header() {
   const { isSignedIn, isLoaded } = useUser()
 
   return (
     <header className="flex justify-between items-center px-6 py-4 border-b border-gray-800/80 bg-black/80 backdrop-blur-md relative z-50">
-      {/* Neon Glowing Blue Italic Cursive Title */}
-      <h1 className="text-xl italic font-semibold tracking-wide text-cyan-400 drop-shadow-[0_0_12px_rgba(34,211,238,0.7)] font-serif">
+      {/* Mythical Title with Cinzel Font & Cyan Glow */}
+      <h1 className={`${cinzel.className} text-xl font-bold tracking-wider text-cyan-400 drop-shadow-[0_0_12px_rgba(34,211,238,0.7)]`}>
         Rising Phoenix
       </h1>
 
-      {/* Direct, robust auth controls */}
+      {/* Direct Auth Controls */}
       <div className="flex items-center gap-4">
         {isLoaded && (
           isSignedIn ? (
