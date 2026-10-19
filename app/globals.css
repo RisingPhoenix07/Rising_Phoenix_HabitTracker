@@ -1,7 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import "tailwindcss";
 
 @layer base {
+  /* Mobile Default: Legible Comic Neue */
   * {
-    font-family: var(--font-space-grotesk), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-family: 'Comic Neue', cursive, sans-serif !important;
+  }
+
+  /* Desktop Default: Native Comic Sans MS */
+  @media (min-width: 768px) {
+    * {
+      font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif !important;
+    }
   }
 }
